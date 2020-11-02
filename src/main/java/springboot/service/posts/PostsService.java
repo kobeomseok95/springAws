@@ -46,6 +46,10 @@ public class PostsService {
                 .map(PostsListResponseDto::new)
                 .collect(Collectors.toList());
     }
+    /*
+        map : 해당 응답(Response) DTO객체로 매핑 (java 8 문법)
+        collect : 스트림에서 제공된 것에 따라 최소한으로 리턴 해당 란에서는 List로 리턴
+     */
 
     @Transactional
     public void delete(Long id){
