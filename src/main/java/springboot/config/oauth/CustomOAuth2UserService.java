@@ -30,15 +30,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();    // 1
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();    // 서비스 구분 id(구글, 네이버등등)
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
-                .getUserInfoEndpoint().getUserNameAttributeName();  //2
+                .getUserInfoEndpoint().getUserNameAttributeName();  // 로그인 진행시 키가 되는 필드
 
         OAuthAttributes attributes =
-                OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes()); //3
+                OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        //Oauth2Service를 통해 가져온 OAuth2User의 attribute를 담을 클래스
 
         User user = saveOrUpdate(attributes);
-        httpSession.setAttribute("user", new SessionUser(user));    //4
+        httpSession.setAttribute("user", new SessionUser(user));
+        //로그인 성공시 SessionUser DTO를 활용해 세션에 정보 저장
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
